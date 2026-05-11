@@ -40,7 +40,9 @@ one sentence citing the RBI 7-working-day mandate, request for resolution and
 written confirmation, professional close.
 
 Leave [Your Name], [Account Number], [Transaction Reference Number], [Your Branch]
-as placeholders exactly as written. Under 150 words. Professional tone.`;
+as placeholders exactly as written.
+Do NOT use any markdown formatting whatsoever. No asterisks, no double asterisks, no bold markers, no underscores, no italics. All placeholders must appear as plain text in square brackets only — write [Account Number], not **[Account Number]** or *[Account Number]*.
+Under 150 words. Professional tone.`;
 
 export const generateAi = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => inputSchema.parse(data))
