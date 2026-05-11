@@ -442,8 +442,7 @@ function Screen4({
 
   return (
     <Card>
-      <p className="text-[12px] text-text-muted">Quick recap</p>
-      <h2 className="text-[18px] font-bold text-text mt-2">Your dispute with {form.bank}</h2>
+      <h2 className="text-[18px] font-bold text-text">Your dispute with {form.bank}</h2>
       <p className="text-[14px] text-text-secondary mt-1">
         ₹{Number(form.amount).toLocaleString("en-IN")} · reported {daysAgo} day{daysAgo === 1 ? "" : "s"} ago
       </p>
