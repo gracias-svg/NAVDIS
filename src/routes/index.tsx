@@ -479,6 +479,12 @@ function Screen5({ onDone }: { onDone: () => void }) {
   return (
     <Card>
       <p className="text-[12px] text-text-muted text-center">UPI Dispute Navigator</p>
+      <div className="mt-4 w-full h-1 bg-code-bg rounded-[2px] overflow-hidden">
+        <div
+          className="h-full bg-primary rounded-[2px]"
+          style={{ width: "100%", transition: "width 1.5s linear", animation: "navdis-progress 1.5s linear forwards" }}
+        />
+      </div>
       <div className="mt-5 space-y-3 min-h-[140px]">
         {items.map((it, i) => (
           <div
