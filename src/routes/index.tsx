@@ -700,7 +700,7 @@ RBI reference: DPSS Circular CO.DPSS.EPPD No.G-3/02.14.003/2019-20
           ))}
         </ol>
 
-        {result.compensationOwed > 0 && (
+        {result.compensationOwed > 0 && (result.windowStatus === "YELLOW" || result.windowStatus === "RED_ESCALATE") && (
           <div className="mt-5 rounded-lg border-l-4 border-yellow bg-yellow-bg p-3.5 text-[13px] text-yellow-text leading-relaxed">
             <strong>💰 You may be owed ₹{result.compensationOwed.toLocaleString("en-IN")} in compensation.</strong>
             <br />
