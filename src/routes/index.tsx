@@ -643,6 +643,11 @@ RBI reference: DPSS Circular CO.DPSS.EPPD No.G-3/02.14.003/2019-20
         <h2 className="mt-3 text-[20px] font-bold text-text leading-snug">
           {result.statusHeadline}
         </h2>
+        {result.windowStatus === "YELLOW" && (
+          <p className="mt-1 text-[13px] text-text-secondary">
+            You have {Math.max(0, 30 - result.dayCount)} days until Ombudsman eligibility.
+          </p>
+        )}
         <hr className="my-4 border-border" />
         <p className="text-[14px] italic text-text-secondary leading-relaxed">
           {explanation
