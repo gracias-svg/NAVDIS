@@ -72,14 +72,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { name: "color-scheme", content: "light" },
+      { title: "UPI Dispute Not Resolved | Check Your RBI Rights in 60 Seconds" },
+      { name: "description", content: "Find out if your bank missed the RBI 7-day deadline on your UPI dispute. Free, no login. Based on RBI DPSS Circular 2019-20." },
+      { property: "og:title", content: "UPI Dispute Navigator — Check Your RBI Rights" },
+      { property: "og:description", content: "Money deducted. Dispute raised. Still waiting. Know your rights in 60 seconds." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
       {
