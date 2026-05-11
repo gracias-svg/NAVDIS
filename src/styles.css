@@ -94,3 +94,8 @@ html, body {
   to { opacity: 0; transform: translateY(8px); }
 }
 .navdis-fade-out { animation: navdis-fade-out 200ms ease-out forwards; }
+
+@keyframes navdis-progress {
+  from { width: 0%; }
+  to { width: 100%; }
+}

@@ -442,8 +442,7 @@ function Screen4({
 
   return (
     <Card>
-      <p className="text-[12px] text-text-muted">Quick recap</p>
-      <h2 className="text-[18px] font-bold text-text mt-2">Your dispute with {form.bank}</h2>
+      <h2 className="text-[18px] font-bold text-text">Your dispute with {form.bank}</h2>
       <p className="text-[14px] text-text-secondary mt-1">
         ₹{Number(form.amount).toLocaleString("en-IN")} · reported {daysAgo} day{daysAgo === 1 ? "" : "s"} ago
       </p>
@@ -480,6 +479,12 @@ function Screen5({ onDone }: { onDone: () => void }) {
   return (
     <Card>
       <p className="text-[12px] text-text-muted text-center">UPI Dispute Navigator</p>
+      <div className="mt-4 w-full h-1 bg-code-bg rounded-[2px] overflow-hidden">
+        <div
+          className="h-full bg-primary rounded-[2px]"
+          style={{ width: "100%", transition: "width 1.5s linear", animation: "navdis-progress 1.5s linear forwards" }}
+        />
+      </div>
       <div className="mt-5 space-y-3 min-h-[140px]">
         {items.map((it, i) => (
           <div
@@ -620,6 +625,20 @@ RBI reference: DPSS Circular CO.DPSS.EPPD No.G-3/02.14.003/2019-20
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const openInGmail = () => {
+    if (!template) return;
+    const lines = template.split("\n");
+    const subjectIdx = lines.findIndex((l) => /^subject:/i.test(l.trim()));
+    let subject = "";
+    let body = template;
+    if (subjectIdx !== -1) {
+      subject = lines[subjectIdx].replace(/^subject:\s*/i, "").trim();
+      body = lines.slice(subjectIdx + 1).join("\n").replace(/^\n+/, "");
+    }
+    const url = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.open(url, "_blank");
+  };
+
   const recordSurvey = (v: "yes" | "no") => {
     setSurveyResponse(v);
     setTimeout(() => setSurveyHidden(true), 200);
@@ -638,6 +657,11 @@ RBI reference: DPSS Circular CO.DPSS.EPPD No.G-3/02.14.003/2019-20
         <h2 className="mt-3 text-[20px] font-bold text-text leading-snug">
           {result.statusHeadline}
         </h2>
+        {result.windowStatus === "YELLOW" && (
+          <p className="mt-1 text-[13px] text-text-secondary">
+            You have {Math.max(0, 30 - result.dayCount)} days until Ombudsman eligibility.
+          </p>
+        )}
         <hr className="my-4 border-border" />
         <p className="text-[14px] italic text-text-secondary leading-relaxed">
           {explanation
@@ -690,7 +714,7 @@ RBI reference: DPSS Circular CO.DPSS.EPPD No.G-3/02.14.003/2019-20
           ))}
         </ol>
 
-        {result.compensationOwed > 0 && (
+        {result.compensationOwed > 0 && (result.windowStatus === "YELLOW" || result.windowStatus === "RED_ESCALATE") && (
           <div className="mt-5 rounded-lg border-l-4 border-yellow bg-yellow-bg p-3.5 text-[13px] text-yellow-text leading-relaxed">
             <strong>💰 You may be owed ₹{result.compensationOwed.toLocaleString("en-IN")} in compensation.</strong>
             <br />
@@ -726,16 +750,24 @@ RBI reference: DPSS Circular CO.DPSS.EPPD No.G-3/02.14.003/2019-20
                 >
                   {template}
                 </pre>
-                <button
-                  onClick={copyTemplate}
-                  className={`mt-3 inline-flex items-center gap-2 h-11 px-4 rounded-md border text-[13px] font-semibold transition-colors ${
-                    copied
-                      ? "bg-green-bg text-green border-green-bg"
-                      : "bg-surface text-text border-border hover:bg-code-bg"
-                  }`}
-                >
-                  {copied ? "✓ Copied!" : "📋 Copy to clipboard"}
-                </button>
+                <div className="mt-3 flex flex-col gap-2">
+                  <button
+                    onClick={copyTemplate}
+                    className={`w-full h-11 px-4 rounded-md border text-[13px] font-semibold transition-colors ${
+                      copied
+                        ? "bg-green-bg text-green border-green-bg"
+                        : "bg-surface text-text border-border hover:bg-code-bg"
+                    }`}
+                  >
+                    {copied ? "✓ Copied!" : "📋 Copy to clipboard"}
+                  </button>
+                  <button
+                    onClick={openInGmail}
+                    className="w-full h-11 px-4 rounded-md border border-primary text-primary text-[13px] font-semibold hover:bg-primary-tint"
+                  >
+                    Open in Gmail →
+                  </button>
+                </div>
               </>
             )}
           </>

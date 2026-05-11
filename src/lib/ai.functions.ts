@@ -22,6 +22,8 @@ Write exactly 2–3 plain sentences explaining what this status means.
 Use simple English. No jargon.
 Do NOT mention any specific number of days or working days.
 Do NOT cite any RBI circular numbers.
+Do NOT use "we", "our", or "us" — you are an independent information tool, not the bank and not NAVDIS. Address the user directly in second person only.
+Do NOT mention the status colour or status code (do not say "GREEN", "YELLOW", "RED", or "ACT SOON" — these are shown separately).
 Be direct and reassuring for GREEN, urgent for RED.`;
 
 const TEMPLATE_PROMPT = (d: z.infer<typeof inputSchema>) => `Generate a formal dispute escalation email for a UPI payment issue.
@@ -38,7 +40,9 @@ one sentence citing the RBI 7-working-day mandate, request for resolution and
 written confirmation, professional close.
 
 Leave [Your Name], [Account Number], [Transaction Reference Number], [Your Branch]
-as placeholders exactly as written. Under 150 words. Professional tone.`;
+as placeholders exactly as written.
+Do NOT use any markdown formatting whatsoever. No asterisks, no double asterisks, no bold markers, no underscores, no italics. All placeholders must appear as plain text in square brackets only — write [Account Number], not **[Account Number]** or *[Account Number]*.
+Under 150 words. Professional tone.`;
 
 export const generateAi = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => inputSchema.parse(data))
