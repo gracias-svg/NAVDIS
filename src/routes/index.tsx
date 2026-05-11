@@ -625,6 +625,20 @@ RBI reference: DPSS Circular CO.DPSS.EPPD No.G-3/02.14.003/2019-20
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const openInGmail = () => {
+    if (!template) return;
+    const lines = template.split("\n");
+    const subjectIdx = lines.findIndex((l) => /^subject:/i.test(l.trim()));
+    let subject = "";
+    let body = template;
+    if (subjectIdx !== -1) {
+      subject = lines[subjectIdx].replace(/^subject:\s*/i, "").trim();
+      body = lines.slice(subjectIdx + 1).join("\n").replace(/^\n+/, "");
+    }
+    const url = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.open(url, "_blank");
+  };
+
   const recordSurvey = (v: "yes" | "no") => {
     setSurveyResponse(v);
     setTimeout(() => setSurveyHidden(true), 200);
