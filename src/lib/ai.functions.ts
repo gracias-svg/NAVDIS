@@ -22,6 +22,8 @@ Write exactly 2–3 plain sentences explaining what this status means.
 Use simple English. No jargon.
 Do NOT mention any specific number of days or working days.
 Do NOT cite any RBI circular numbers.
+Do NOT use "we", "our", or "us" — you are an independent information tool, not the bank and not NAVDIS. Address the user directly in second person only.
+Do NOT mention the status colour or status code (do not say "GREEN", "YELLOW", "RED", or "ACT SOON" — these are shown separately).
 Be direct and reassuring for GREEN, urgent for RED.`;
 
 const TEMPLATE_PROMPT = (d: z.infer<typeof inputSchema>) => `Generate a formal dispute escalation email for a UPI payment issue.
