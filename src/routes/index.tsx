@@ -750,16 +750,24 @@ RBI reference: DPSS Circular CO.DPSS.EPPD No.G-3/02.14.003/2019-20
                 >
                   {template}
                 </pre>
-                <button
-                  onClick={copyTemplate}
-                  className={`mt-3 inline-flex items-center gap-2 h-11 px-4 rounded-md border text-[13px] font-semibold transition-colors ${
-                    copied
-                      ? "bg-green-bg text-green border-green-bg"
-                      : "bg-surface text-text border-border hover:bg-code-bg"
-                  }`}
-                >
-                  {copied ? "✓ Copied!" : "📋 Copy to clipboard"}
-                </button>
+                <div className="mt-3 flex flex-col gap-2">
+                  <button
+                    onClick={copyTemplate}
+                    className={`w-full h-11 px-4 rounded-md border text-[13px] font-semibold transition-colors ${
+                      copied
+                        ? "bg-green-bg text-green border-green-bg"
+                        : "bg-surface text-text border-border hover:bg-code-bg"
+                    }`}
+                  >
+                    {copied ? "✓ Copied!" : "📋 Copy to clipboard"}
+                  </button>
+                  <button
+                    onClick={openInGmail}
+                    className="w-full h-11 px-4 rounded-md border border-primary text-primary text-[13px] font-semibold hover:bg-primary-tint"
+                  >
+                    Open in Gmail →
+                  </button>
+                </div>
               </>
             )}
           </>
