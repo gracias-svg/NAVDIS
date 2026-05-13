@@ -285,10 +285,14 @@ function Screen1({
   return (
     <Card>
       <ProgressLabel step={1} />
-      <h2 className="text-[16px] font-bold text-text">Which bank holds your account?</h2>
+      <h1 className="text-[16px] font-bold text-text">
+        <label htmlFor="navdis-bank-search">Which bank holds your account?</label>
+      </h1>
       <p className="text-[12px] text-text-secondary mt-1">The bank that debited your money</p>
       <div className="mt-4 relative">
         <input
+          id="navdis-bank-search"
+          aria-label="Search banks"
           value={query}
           onChange={(e) => {
             setQuery(e.target.value);
