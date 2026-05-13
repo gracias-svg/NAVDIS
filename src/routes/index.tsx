@@ -556,7 +556,7 @@ function Screen4({
 
   return (
     <Card>
-      <h2 className="text-[18px] font-bold text-text">Your dispute with {form.bank}</h2>
+      <h1 className="text-[18px] font-bold text-text">Your dispute with {form.bank}</h1>
       <p className="text-[14px] text-text-secondary mt-1">
         ₹{Number(form.amount).toLocaleString("en-IN")} · reported {daysAgo} day{daysAgo === 1 ? "" : "s"} ago
       </p>
