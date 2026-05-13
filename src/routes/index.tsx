@@ -125,13 +125,38 @@ function NavdisApp() {
 
 function BrandHeader() {
   return (
-    <div className="flex items-center gap-2 mb-5">
-      <div className="w-7 h-7 rounded-md bg-primary flex items-center justify-center text-white text-sm font-bold">
-        ✓
+    <div className="flex items-center gap-2.5 mb-5">
+      <div className="w-9 h-9 flex items-center justify-center shrink-0">
+        <svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="navGreen" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#00C853" />
+              <stop offset="100%" stopColor="#00875A" />
+            </linearGradient>
+            <linearGradient id="navBlue" x1="1" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#0052CC" />
+              <stop offset="100%" stopColor="#0747A6" />
+            </linearGradient>
+          </defs>
+          <path
+            d="M6 4 L6 28 L10 28 L10 12 L26 28 L30 28 L30 8 L26 8 L26 24 L10 8 Z"
+            fill="url(#navBlue)"
+          />
+          <polygon points="18,14 24,20 18,20" fill="url(#navGreen)" opacity="0.9" />
+          <polygon points="18,22 12,16 18,16" fill="url(#navBlue)" opacity="0.7" />
+        </svg>
       </div>
-      <span className="text-[12px] font-semibold tracking-[0.08em] uppercase text-primary">
-        UPI Dispute Navigator
-      </span>
+      <div className="flex flex-col leading-none">
+        <span className="text-[12px] font-semibold tracking-[0.08em] uppercase text-primary">
+          NAVDIS
+        </span>
+        <span
+          className="mt-0.5 uppercase text-text-muted"
+          style={{ fontSize: "9px", letterSpacing: "0.5px", fontWeight: 500 }}
+        >
+          Navigate. Act. Protect.
+        </span>
+      </div>
     </div>
   );
 }
