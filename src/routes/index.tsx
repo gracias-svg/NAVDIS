@@ -660,7 +660,10 @@ function Screen6({ form, onReset }: { form: FormState; onReset: () => void }) {
           amount: Number(form.amount),
         },
       });
-      setTemplate(r.text);
+      const filled = form.utr
+        ? r.text.replace("[Transaction Reference Number]", form.utr)
+        : r.text;
+      setTemplate(filled);
     } catch {
       setTemplateFailed(true);
     } finally {
