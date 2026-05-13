@@ -351,7 +351,7 @@ function Screen2({
   return (
     <Card>
       <ProgressLabel step={2} />
-      <h2 className="text-[16px] font-bold text-text">What happened to your payment?</h2>
+      <h1 className="text-[16px] font-bold text-text">What happened to your payment?</h1>
       <div className="mt-4 flex flex-col gap-3">
         {FAILURE_TYPES.map((f) => {
           const active = selected === f.id;
