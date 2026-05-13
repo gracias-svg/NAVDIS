@@ -759,7 +759,7 @@ RBI reference: DPSS Circular CO.DPSS.EPPD No.G-3/02.14.003/2019-20
   };
 
   return (
-    <div className="space-y-3 pb-24">
+    <div className="space-y-3 pb-20">
       {/* ZONE A — STATUS */}
       <Card>
         <span
