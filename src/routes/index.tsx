@@ -771,10 +771,23 @@ RBI reference: DPSS Circular CO.DPSS.EPPD No.G-3/02.14.003/2019-20
         <h2 className="mt-3 text-[20px] font-bold text-text leading-snug">
           {result.statusHeadline}
         </h2>
-        {result.windowStatus === "YELLOW" && (
+        {result.windowStatus === "GREEN" && (
           <p className="mt-1 text-[13px] text-text-secondary">
-            You have {Math.max(0, 30 - result.dayCount)} days until Ombudsman eligibility.
+            Your bank's deadline: {addWorkingDays(form.disputeDate, 7)}
           </p>
+        )}
+        {result.windowStatus === "YELLOW" && (
+          <>
+            <p className="mt-1 text-[13px] text-text-secondary">
+              You have {Math.max(0, 30 - result.dayCount)} days until Ombudsman eligibility.
+            </p>
+            <p
+              className="mt-1 text-[13px] font-semibold"
+              style={{ color: "#974F0C" }}
+            >
+              Your bank's final deadline: {addWorkingDays(form.disputeDate, 7)}
+            </p>
+          </>
         )}
         <hr className="my-4 border-border" />
         <p className="text-[14px] italic text-text-secondary leading-relaxed">
