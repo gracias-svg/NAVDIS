@@ -1,0 +1,9 @@
+# NAVDIS — UPI Dispute Navigator
+
+> Tells Indian UPI users exactly where their payment dispute stands relative to the RBI 7-day mandate, and what to do today. Based on RBI DPSS Circular CO.DPSS.EPPD No.G-3/02.14.003/2019-20.
+
+NAVDIS is a free, no-login web tool for Indian UPI users whose bank payment failed but the money was deducted. Users enter their bank, what happened, the transaction date, and the date they raised the complaint. NAVDIS calculates whether the bank is still within the RBI 7-working-day resolution window, when the user becomes eligible for ₹100/day compensation, and when they can file with the RBI Banking Ombudsman. It also generates a personalised escalation email template.
+
+## Pages
+
+- [Home](/): Check your UPI dispute status, see your RBI rights, get an escalation email template, and learn when to file with the Ombudsman.
