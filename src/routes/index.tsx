@@ -682,6 +682,7 @@ function Screen6({ form, onReset }: { form: FormState; onReset: () => void }) {
             status: result.windowStatus,
             failureType: failureTypeLabel(form.failureType as FailureType),
             disputeDate: form.disputeDate,
+            dayCount: result.dayCount,
           },
         });
         if (!cancel) setExplanation(r.text);
