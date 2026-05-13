@@ -772,9 +772,9 @@ RBI reference: DPSS Circular CO.DPSS.EPPD No.G-3/02.14.003/2019-20
           <span className={`w-1.5 h-1.5 rounded-full ${statusStyles.dot}`} />
           {result.statusLabel}
         </span>
-        <h2 className="mt-3 text-[20px] font-bold text-text leading-snug">
+        <h1 className="mt-3 text-[20px] font-bold text-text leading-snug">
           {result.statusHeadline}
-        </h2>
+        </h1>
         {result.windowStatus === "GREEN" && (
           <p className="mt-1 text-[13px] text-text-secondary">
             Your bank's deadline: {addWorkingDays(form.disputeDate, 7)}
