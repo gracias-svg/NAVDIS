@@ -23,7 +23,10 @@ interface FormState {
   amount: string;
   transactionDate: string;
   disputeDate: string;
+  utr: string;
 }
+
+type PreQuestionAnswer = "yes" | "no" | "not_sure" | "skipped";
 
 const empty: FormState = {
   bank: "",
@@ -31,7 +34,24 @@ const empty: FormState = {
   amount: "",
   transactionDate: "",
   disputeDate: "",
+  utr: "",
 };
+
+function addWorkingDays(dateStr: string, days: number): string {
+  const date = new Date(dateStr);
+  let added = 0;
+  while (added < days) {
+    date.setDate(date.getDate() + 1);
+    const d = date.getDay();
+    if (d !== 0 && d !== 6) added++;
+  }
+  return date.toLocaleDateString("en-IN", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
 
 function todayISO() {
   const d = new Date();
