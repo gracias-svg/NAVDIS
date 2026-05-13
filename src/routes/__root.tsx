@@ -74,11 +74,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "color-scheme", content: "light" },
       { title: "UPI Dispute Not Resolved | Check Your RBI Rights in 60 Seconds" },
-      { name: "description", content: "Find out if your bank missed the RBI 7-day deadline on your UPI dispute. Free, no login. Based on RBI DPSS Circular 2019-20." },
-      { property: "og:title", content: "UPI Dispute Navigator — Check Your RBI Rights" },
-      { property: "og:description", content: "Money deducted. Dispute raised. Still waiting. Know your rights in 60 seconds." },
+      { name: "description", content: "Find out if your bank missed the RBI 7-day deadline on your UPI dispute.  Based on RBI DPSS Circular 2019-20." },
+      { property: "og:title", content: "UPI Dispute Not Resolved | Check Your RBI Rights in 60 Seconds" },
+      { property: "og:description", content: "Find out if your bank missed the RBI 7-day deadline on your UPI dispute.  Based on RBI DPSS Circular 2019-20." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "UPI Dispute Not Resolved | Check Your RBI Rights in 60 Seconds" },
+      { name: "twitter:description", content: "Find out if your bank missed the RBI 7-day deadline on your UPI dispute.  Based on RBI DPSS Circular 2019-20." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/IU43Cipuf1a7TKyEn0nUlK37Kv42/social-images/social-1778672150343-ChatGPT_Image_May_13,_2026,_05_05_20_PM.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/IU43Cipuf1a7TKyEn0nUlK37Kv42/social-images/social-1778672150343-ChatGPT_Image_May_13,_2026,_05_05_20_PM.webp" },
     ],
     links: [
       {
