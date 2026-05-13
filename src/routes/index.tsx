@@ -207,7 +207,20 @@ function ProgressLabel({ step }: { step: 1 | 2 | 3 }) {
 }
 
 /* ────────────── SCREEN 0 ────────────── */
-function Screen0({ onStart }: { onStart: () => void }) {
+function Screen0({
+  onStart,
+  preQuestionAnswer,
+  onPreAnswer,
+}: {
+  onStart: () => void;
+  preQuestionAnswer: PreQuestionAnswer;
+  onPreAnswer: (a: PreQuestionAnswer) => void;
+}) {
+  const opts: { value: Exclude<PreQuestionAnswer, "skipped">; label: string }[] = [
+    { value: "yes", label: "Yes" },
+    { value: "no", label: "No" },
+    { value: "not_sure", label: "Not sure" },
+  ];
   return (
     <Card>
       <h1 className="text-[22px] font-bold text-text leading-tight">
@@ -221,6 +234,31 @@ function Screen0({ onStart }: { onStart: () => void }) {
       </div>
       <div className="mt-6">
         <PrimaryButton onClick={onStart}>Check My Dispute Status →</PrimaryButton>
+      </div>
+      <div className="mt-4 flex flex-col items-center">
+        <div className="h-px w-20 bg-border" />
+        <p className="mt-2 text-[12px] text-text-secondary text-center">
+          Before you check — do you know if your bank is still within its RBI deadline?
+        </p>
+        <div className="mt-2.5 flex gap-2 justify-center">
+          {opts.map((o) => {
+            const active = preQuestionAnswer === o.value;
+            return (
+              <button
+                key={o.value}
+                onClick={() => onPreAnswer(o.value)}
+                className={`text-[12px] rounded-xl border transition-colors ${
+                  active
+                    ? "bg-primary-tint border-primary text-primary"
+                    : "bg-transparent border-border text-text-secondary"
+                }`}
+                style={{ padding: "4px 6px" }}
+              >
+                {o.label}
+              </button>
+            );
+          })}
+        </div>
       </div>
     </Card>
   );
