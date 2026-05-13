@@ -23,7 +23,10 @@ interface FormState {
   amount: string;
   transactionDate: string;
   disputeDate: string;
+  utr: string;
 }
+
+type PreQuestionAnswer = "yes" | "no" | "not_sure" | "skipped";
 
 const empty: FormState = {
   bank: "",
@@ -31,7 +34,24 @@ const empty: FormState = {
   amount: "",
   transactionDate: "",
   disputeDate: "",
+  utr: "",
 };
+
+function addWorkingDays(dateStr: string, days: number): string {
+  const date = new Date(dateStr);
+  let added = 0;
+  while (added < days) {
+    date.setDate(date.getDate() + 1);
+    const d = date.getDay();
+    if (d !== 0 && d !== 6) added++;
+  }
+  return date.toLocaleDateString("en-IN", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
 
 function todayISO() {
   const d = new Date();
@@ -42,9 +62,12 @@ function todayISO() {
 function NavdisApp() {
   const [step, setStep] = useState<Step>(0);
   const [form, setForm] = useState<FormState>(empty);
+  const [preQuestionAnswer, setPreQuestionAnswer] =
+    useState<PreQuestionAnswer>("skipped");
 
   const reset = () => {
     setForm(empty);
+    setPreQuestionAnswer("skipped");
     setStep(0);
   };
 
@@ -52,7 +75,13 @@ function NavdisApp() {
     <div className="min-h-screen bg-bg flex flex-col">
       <main className="flex-1 w-full max-w-[480px] mx-auto px-4 py-5 sm:py-8">
         <BrandHeader />
-        {step === 0 && <Screen0 onStart={() => setStep(1)} />}
+        {step === 0 && (
+          <Screen0
+            onStart={() => setStep(1)}
+            preQuestionAnswer={preQuestionAnswer}
+            onPreAnswer={setPreQuestionAnswer}
+          />
+        )}
         {step === 1 && (
           <Screen1
             bank={form.bank}
@@ -96,13 +125,38 @@ function NavdisApp() {
 
 function BrandHeader() {
   return (
-    <div className="flex items-center gap-2 mb-5">
-      <div className="w-7 h-7 rounded-md bg-primary flex items-center justify-center text-white text-sm font-bold">
-        ✓
+    <div className="flex items-center gap-2.5 mb-5">
+      <div className="w-9 h-9 flex items-center justify-center shrink-0">
+        <svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="navGreen" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#00C853" />
+              <stop offset="100%" stopColor="#00875A" />
+            </linearGradient>
+            <linearGradient id="navBlue" x1="1" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#0052CC" />
+              <stop offset="100%" stopColor="#0747A6" />
+            </linearGradient>
+          </defs>
+          <path
+            d="M6 4 L6 28 L10 28 L10 12 L26 28 L30 28 L30 8 L26 8 L26 24 L10 8 Z"
+            fill="url(#navBlue)"
+          />
+          <polygon points="18,14 24,20 18,20" fill="url(#navGreen)" opacity="0.9" />
+          <polygon points="18,22 12,16 18,16" fill="url(#navBlue)" opacity="0.7" />
+        </svg>
       </div>
-      <span className="text-[12px] font-semibold tracking-[0.08em] uppercase text-primary">
-        UPI Dispute Navigator
-      </span>
+      <div className="flex flex-col leading-none">
+        <span className="text-[12px] font-semibold tracking-[0.08em] uppercase text-primary">
+          NAVDIS
+        </span>
+        <span
+          className="mt-0.5 uppercase text-text-muted"
+          style={{ fontSize: "9px", letterSpacing: "0.5px", fontWeight: 500 }}
+        >
+          Navigate. Act. Protect.
+        </span>
+      </div>
     </div>
   );
 }
@@ -153,7 +207,20 @@ function ProgressLabel({ step }: { step: 1 | 2 | 3 }) {
 }
 
 /* ────────────── SCREEN 0 ────────────── */
-function Screen0({ onStart }: { onStart: () => void }) {
+function Screen0({
+  onStart,
+  preQuestionAnswer,
+  onPreAnswer,
+}: {
+  onStart: () => void;
+  preQuestionAnswer: PreQuestionAnswer;
+  onPreAnswer: (a: PreQuestionAnswer) => void;
+}) {
+  const opts: { value: Exclude<PreQuestionAnswer, "skipped">; label: string }[] = [
+    { value: "yes", label: "Yes" },
+    { value: "no", label: "No" },
+    { value: "not_sure", label: "Not sure" },
+  ];
   return (
     <Card>
       <h1 className="text-[22px] font-bold text-text leading-tight">
@@ -167,6 +234,31 @@ function Screen0({ onStart }: { onStart: () => void }) {
       </div>
       <div className="mt-6">
         <PrimaryButton onClick={onStart}>Check My Dispute Status →</PrimaryButton>
+      </div>
+      <div className="mt-4 flex flex-col items-center">
+        <div className="h-px w-20 bg-border" />
+        <p className="mt-2 text-[12px] text-text-secondary text-center">
+          Before you check — do you know if your bank is still within its RBI deadline?
+        </p>
+        <div className="mt-2.5 flex gap-2 justify-center">
+          {opts.map((o) => {
+            const active = preQuestionAnswer === o.value;
+            return (
+              <button
+                key={o.value}
+                onClick={() => onPreAnswer(o.value)}
+                className={`text-[12px] rounded-xl border transition-colors ${
+                  active
+                    ? "bg-primary-tint border-primary text-primary"
+                    : "bg-transparent border-border text-text-secondary"
+                }`}
+                style={{ padding: "4px 6px" }}
+              >
+                {o.label}
+              </button>
+            );
+          })}
+        </div>
       </div>
     </Card>
   );
@@ -407,6 +499,24 @@ function Screen3({
             <p className="mt-1 text-[12px] text-red">{errDisputeOrder || errDisputeFuture}</p>
           )}
         </div>
+
+        {/* UTR (optional) */}
+        <div>
+          <label className="text-[13px] font-semibold text-text">
+            Transaction reference (UTR){" "}
+            <span className="font-normal text-text-muted">(optional)</span>
+          </label>
+          <p className="text-[11px] text-text-muted mt-0.5">
+            From your bank SMS — pre-fills the escalation email
+          </p>
+          <input
+            type="text"
+            value={form.utr}
+            onChange={(e) => onChange({ utr: e.target.value })}
+            placeholder="e.g. 424213456789"
+            className="mt-1.5 w-full h-12 px-3 rounded-md border border-border bg-surface text-[14px] focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-tint"
+          />
+        </div>
       </div>
 
       <div className="mt-6 flex flex-col gap-3">
@@ -550,7 +660,10 @@ function Screen6({ form, onReset }: { form: FormState; onReset: () => void }) {
           amount: Number(form.amount),
         },
       });
-      setTemplate(r.text);
+      const filled = form.utr
+        ? r.text.replace("[Transaction Reference Number]", form.utr)
+        : r.text;
+      setTemplate(filled);
     } catch {
       setTemplateFailed(true);
     } finally {
@@ -569,6 +682,7 @@ function Screen6({ form, onReset }: { form: FormState; onReset: () => void }) {
             status: result.windowStatus,
             failureType: failureTypeLabel(form.failureType as FailureType),
             disputeDate: form.disputeDate,
+            dayCount: result.dayCount,
           },
         });
         if (!cancel) setExplanation(r.text);
@@ -645,7 +759,7 @@ RBI reference: DPSS Circular CO.DPSS.EPPD No.G-3/02.14.003/2019-20
   };
 
   return (
-    <div className="space-y-3 pb-24">
+    <div className="space-y-3 pb-20">
       {/* ZONE A — STATUS */}
       <Card>
         <span
@@ -657,10 +771,23 @@ RBI reference: DPSS Circular CO.DPSS.EPPD No.G-3/02.14.003/2019-20
         <h2 className="mt-3 text-[20px] font-bold text-text leading-snug">
           {result.statusHeadline}
         </h2>
-        {result.windowStatus === "YELLOW" && (
+        {result.windowStatus === "GREEN" && (
           <p className="mt-1 text-[13px] text-text-secondary">
-            You have {Math.max(0, 30 - result.dayCount)} days until Ombudsman eligibility.
+            Your bank's deadline: {addWorkingDays(form.disputeDate, 7)}
           </p>
+        )}
+        {result.windowStatus === "YELLOW" && (
+          <>
+            <p className="mt-1 text-[13px] text-text-secondary">
+              You have {Math.max(0, 30 - result.dayCount)} days until Ombudsman eligibility.
+            </p>
+            <p
+              className="mt-1 text-[13px] font-semibold"
+              style={{ color: "#974F0C" }}
+            >
+              Your bank's final deadline: {addWorkingDays(form.disputeDate, 7)}
+            </p>
+          </>
         )}
         <hr className="my-4 border-border" />
         <p className="text-[14px] italic text-text-secondary leading-relaxed">
