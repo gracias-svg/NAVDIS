@@ -62,9 +62,12 @@ function todayISO() {
 function NavdisApp() {
   const [step, setStep] = useState<Step>(0);
   const [form, setForm] = useState<FormState>(empty);
+  const [preQuestionAnswer, setPreQuestionAnswer] =
+    useState<PreQuestionAnswer>("skipped");
 
   const reset = () => {
     setForm(empty);
+    setPreQuestionAnswer("skipped");
     setStep(0);
   };
 
@@ -72,7 +75,13 @@ function NavdisApp() {
     <div className="min-h-screen bg-bg flex flex-col">
       <main className="flex-1 w-full max-w-[480px] mx-auto px-4 py-5 sm:py-8">
         <BrandHeader />
-        {step === 0 && <Screen0 onStart={() => setStep(1)} />}
+        {step === 0 && (
+          <Screen0
+            onStart={() => setStep(1)}
+            preQuestionAnswer={preQuestionAnswer}
+            onPreAnswer={setPreQuestionAnswer}
+          />
+        )}
         {step === 1 && (
           <Screen1
             bank={form.bank}
