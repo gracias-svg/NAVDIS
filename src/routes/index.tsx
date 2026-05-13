@@ -428,7 +428,7 @@ function Screen3({
   return (
     <Card>
       <ProgressLabel step={3} />
-      <h2 className="text-[16px] font-bold text-text">Dates and amount</h2>
+      <h1 className="text-[16px] font-bold text-text">Dates and amount</h1>
       <p className="text-[12px] italic text-text-secondary mt-1">
         Check your bank SMS for these details
       </p>
