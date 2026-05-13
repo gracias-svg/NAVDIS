@@ -499,6 +499,24 @@ function Screen3({
             <p className="mt-1 text-[12px] text-red">{errDisputeOrder || errDisputeFuture}</p>
           )}
         </div>
+
+        {/* UTR (optional) */}
+        <div>
+          <label className="text-[13px] font-semibold text-text">
+            Transaction reference (UTR){" "}
+            <span className="font-normal text-text-muted">(optional)</span>
+          </label>
+          <p className="text-[11px] text-text-muted mt-0.5">
+            From your bank SMS — pre-fills the escalation email
+          </p>
+          <input
+            type="text"
+            value={form.utr}
+            onChange={(e) => onChange({ utr: e.target.value })}
+            placeholder="e.g. 424213456789"
+            className="mt-1.5 w-full h-12 px-3 rounded-md border border-border bg-surface text-[14px] focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-tint"
+          />
+        </div>
       </div>
 
       <div className="mt-6 flex flex-col gap-3">
