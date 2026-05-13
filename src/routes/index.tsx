@@ -436,10 +436,11 @@ function Screen3({
       <div className="mt-5 space-y-5">
         {/* Amount */}
         <div>
-          <label className="text-[13px] font-semibold text-text">Transaction amount</label>
+          <label htmlFor="navdis-amount" className="text-[13px] font-semibold text-text">Transaction amount</label>
           <div className="mt-1.5 relative">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary text-[14px]">₹</span>
             <input
+              id="navdis-amount"
               type="number"
               inputMode="numeric"
               min={1}
@@ -459,8 +460,9 @@ function Screen3({
 
         {/* Transaction date */}
         <div>
-          <label className="text-[13px] font-semibold text-text">Date of failed transaction</label>
+          <label htmlFor="navdis-tx-date" className="text-[13px] font-semibold text-text">Date of failed transaction</label>
           <input
+            id="navdis-tx-date"
             type="date"
             max={today}
             value={form.transactionDate}
@@ -483,11 +485,12 @@ function Screen3({
 
         {/* Dispute date */}
         <div>
-          <label className="text-[13px] font-semibold text-text">Date you raised the complaint</label>
+          <label htmlFor="navdis-dispute-date" className="text-[13px] font-semibold text-text">Date you raised the complaint</label>
           <p className="text-[12px] text-text-secondary mt-0.5">
             When did you first report this to your bank or UPI app?
           </p>
           <input
+            id="navdis-dispute-date"
             type="date"
             max={today}
             value={form.disputeDate}
@@ -506,7 +509,7 @@ function Screen3({
 
         {/* UTR (optional) */}
         <div>
-          <label className="text-[13px] font-semibold text-text">
+          <label htmlFor="navdis-utr" className="text-[13px] font-semibold text-text">
             Transaction reference (UTR){" "}
             <span className="font-normal text-text-muted">(optional)</span>
           </label>
@@ -514,6 +517,7 @@ function Screen3({
             From your bank SMS — pre-fills the escalation email
           </p>
           <input
+            id="navdis-utr"
             type="text"
             value={form.utr}
             onChange={(e) => onChange({ utr: e.target.value })}
