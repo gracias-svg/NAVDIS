@@ -285,10 +285,14 @@ function Screen1({
   return (
     <Card>
       <ProgressLabel step={1} />
-      <h2 className="text-[16px] font-bold text-text">Which bank holds your account?</h2>
+      <h1 className="text-[16px] font-bold text-text">
+        <label htmlFor="navdis-bank-search">Which bank holds your account?</label>
+      </h1>
       <p className="text-[12px] text-text-secondary mt-1">The bank that debited your money</p>
       <div className="mt-4 relative">
         <input
+          id="navdis-bank-search"
+          aria-label="Search banks"
           value={query}
           onChange={(e) => {
             setQuery(e.target.value);
@@ -347,7 +351,7 @@ function Screen2({
   return (
     <Card>
       <ProgressLabel step={2} />
-      <h2 className="text-[16px] font-bold text-text">What happened to your payment?</h2>
+      <h1 className="text-[16px] font-bold text-text">What happened to your payment?</h1>
       <div className="mt-4 flex flex-col gap-3">
         {FAILURE_TYPES.map((f) => {
           const active = selected === f.id;
@@ -424,7 +428,7 @@ function Screen3({
   return (
     <Card>
       <ProgressLabel step={3} />
-      <h2 className="text-[16px] font-bold text-text">Dates and amount</h2>
+      <h1 className="text-[16px] font-bold text-text">Dates and amount</h1>
       <p className="text-[12px] italic text-text-secondary mt-1">
         Check your bank SMS for these details
       </p>
@@ -432,10 +436,11 @@ function Screen3({
       <div className="mt-5 space-y-5">
         {/* Amount */}
         <div>
-          <label className="text-[13px] font-semibold text-text">Transaction amount</label>
+          <label htmlFor="navdis-amount" className="text-[13px] font-semibold text-text">Transaction amount</label>
           <div className="mt-1.5 relative">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary text-[14px]">₹</span>
             <input
+              id="navdis-amount"
               type="number"
               inputMode="numeric"
               min={1}
@@ -455,8 +460,9 @@ function Screen3({
 
         {/* Transaction date */}
         <div>
-          <label className="text-[13px] font-semibold text-text">Date of failed transaction</label>
+          <label htmlFor="navdis-tx-date" className="text-[13px] font-semibold text-text">Date of failed transaction</label>
           <input
+            id="navdis-tx-date"
             type="date"
             max={today}
             value={form.transactionDate}
@@ -479,11 +485,12 @@ function Screen3({
 
         {/* Dispute date */}
         <div>
-          <label className="text-[13px] font-semibold text-text">Date you raised the complaint</label>
+          <label htmlFor="navdis-dispute-date" className="text-[13px] font-semibold text-text">Date you raised the complaint</label>
           <p className="text-[12px] text-text-secondary mt-0.5">
             When did you first report this to your bank or UPI app?
           </p>
           <input
+            id="navdis-dispute-date"
             type="date"
             max={today}
             value={form.disputeDate}
@@ -502,7 +509,7 @@ function Screen3({
 
         {/* UTR (optional) */}
         <div>
-          <label className="text-[13px] font-semibold text-text">
+          <label htmlFor="navdis-utr" className="text-[13px] font-semibold text-text">
             Transaction reference (UTR){" "}
             <span className="font-normal text-text-muted">(optional)</span>
           </label>
@@ -510,6 +517,7 @@ function Screen3({
             From your bank SMS — pre-fills the escalation email
           </p>
           <input
+            id="navdis-utr"
             type="text"
             value={form.utr}
             onChange={(e) => onChange({ utr: e.target.value })}
@@ -552,7 +560,7 @@ function Screen4({
 
   return (
     <Card>
-      <h2 className="text-[18px] font-bold text-text">Your dispute with {form.bank}</h2>
+      <h1 className="text-[18px] font-bold text-text">Your dispute with {form.bank}</h1>
       <p className="text-[14px] text-text-secondary mt-1">
         ₹{Number(form.amount).toLocaleString("en-IN")} · reported {daysAgo} day{daysAgo === 1 ? "" : "s"} ago
       </p>
@@ -768,9 +776,9 @@ RBI reference: DPSS Circular CO.DPSS.EPPD No.G-3/02.14.003/2019-20
           <span className={`w-1.5 h-1.5 rounded-full ${statusStyles.dot}`} />
           {result.statusLabel}
         </span>
-        <h2 className="mt-3 text-[20px] font-bold text-text leading-snug">
+        <h1 className="mt-3 text-[20px] font-bold text-text leading-snug">
           {result.statusHeadline}
-        </h2>
+        </h1>
         {result.windowStatus === "GREEN" && (
           <p className="mt-1 text-[13px] text-text-secondary">
             Your bank's deadline: {addWorkingDays(form.disputeDate, 7)}
