@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { logSession, type PreQuestionAnswer } from "@/lib/supabase";
 import {
@@ -16,6 +16,11 @@ export const Route = createFileRoute("/")({
   component: NavdisApp,
 });
 
+// ─────────────────────────────────────────────────────────────────────────────
+// TYPES
+// PreQuestionAnswer is imported from supabase.ts — do NOT redefine it here.
+// ─────────────────────────────────────────────────────────────────────────────
+
 type Step = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
 interface FormState {
@@ -27,9 +32,7 @@ interface FormState {
   utr: string;
 }
 
-type PreQuestionAnswer = "yes" | "no" | "not_sure" | "skipped";
-
-const empty: FormState = {
+const EMPTY_FORM: FormState = {
   bank: "",
   failureType: "",
   amount: "",
@@ -37,6 +40,10 @@ const empty: FormState = {
   disputeDate: "",
   utr: "",
 };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────────────────────────────────────────
 
 function addWorkingDays(dateStr: string, days: number): string {
   const date = new Date(dateStr);
@@ -54,20 +61,23 @@ function addWorkingDays(dateStr: string, days: number): string {
   });
 }
 
-function todayISO() {
+function todayISO(): string {
   const d = new Date();
   const pad = (n: number) => String(n).padStart(2, "0");
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// ROOT APP
+// ─────────────────────────────────────────────────────────────────────────────
+
 function NavdisApp() {
   const [step, setStep] = useState<Step>(0);
-  const [form, setForm] = useState<FormState>(empty);
-  const [preQuestionAnswer, setPreQuestionAnswer] =
-    useState<PreQuestionAnswer>("skipped");
+  const [form, setForm] = useState<FormState>(EMPTY_FORM);
+  const [preQuestionAnswer, setPreQuestionAnswer] = useState<PreQuestionAnswer>("skipped");
 
   const reset = () => {
-    setForm(empty);
+    setForm(EMPTY_FORM);
     setPreQuestionAnswer("skipped");
     setStep(0);
   };
@@ -76,6 +86,7 @@ function NavdisApp() {
     <div className="min-h-screen bg-bg flex flex-col">
       <main className="flex-1 w-full max-w-[480px] mx-auto px-4 py-5 sm:py-8">
         <BrandHeader />
+
         {step === 0 && (
           <Screen0
             onStart={() => setStep(1)}
@@ -117,12 +128,22 @@ function NavdisApp() {
           />
         )}
         {step === 5 && <Screen5 onDone={() => setStep(6)} />}
-        {step === 6 && <Screen6 form={form} onReset={reset} preQuestionAnswer={preQuestionAnswer} />}
+        {step === 6 && (
+          <Screen6
+            form={form}
+            onReset={reset}
+            preQuestionAnswer={preQuestionAnswer}
+          />
+        )}
       </main>
       <Footer />
     </div>
   );
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SHARED COMPONENTS
+// ─────────────────────────────────────────────────────────────────────────────
 
 function BrandHeader() {
   return (
@@ -130,10 +151,10 @@ function BrandHeader() {
       <div
         className="shrink-0 overflow-hidden"
         style={{
-          width: "38px",
-          height: "38px",
+          width: 38,
+          height: 38,
           background: "#111827",
-          borderRadius: "10px",
+          borderRadius: 10,
           boxShadow: "0 2px 8px rgba(0,0,0,0.20)",
         }}
       >
@@ -142,7 +163,7 @@ function BrandHeader() {
           alt="NAVDIS"
           width={38}
           height={38}
-          style={{ objectFit: "cover", display: "block", width: "38px", height: "38px" }}
+          style={{ objectFit: "cover", display: "block", width: 38, height: 38 }}
         />
       </div>
       <div className="flex flex-col leading-none">
@@ -151,7 +172,7 @@ function BrandHeader() {
         </span>
         <span
           className="mt-0.5 uppercase text-text-muted"
-          style={{ fontSize: "9px", letterSpacing: "0.8px", fontWeight: 500 }}
+          style={{ fontSize: 9, letterSpacing: "0.8px", fontWeight: 500 }}
         >
           Navigate. Act. Protect.
         </span>
@@ -163,16 +184,15 @@ function BrandHeader() {
 function Footer() {
   return (
     <footer className="w-full max-w-[480px] mx-auto px-4 pb-6 pt-4 text-center text-[11px] text-text-muted leading-relaxed">
-      Based on RBI DPSS Circular CO.DPSS.EPPD No.G-3/02.14.003/2019-20. For complex disputes, contact your bank's nodal officer. Not legal advice. Built by Recarsul Gracias.
+      Based on RBI DPSS Circular CO.DPSS.EPPD No.G-3/02.14.003/2019-20. For complex disputes,
+      contact your bank's nodal officer. Not legal advice. Built by Recarsul Gracias.
     </footer>
   );
 }
 
 function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <div
-      className={`bg-surface rounded-[12px] p-[18px] sm:p-6 shadow-[0_2px_8px_rgba(0,0,0,0.08)] ${className}`}
-    >
+    <div className={`bg-surface rounded-[12px] p-[18px] sm:p-6 shadow-[0_2px_8px_rgba(0,0,0,0.08)] ${className}`}>
       {children}
     </div>
   );
@@ -205,7 +225,10 @@ function ProgressLabel({ step }: { step: 1 | 2 | 3 }) {
   return <div className="text-[12px] text-text-muted mb-2">Step {step} of 3</div>;
 }
 
-/* ────────────── SCREEN 0 ────────────── */
+// ─────────────────────────────────────────────────────────────────────────────
+// SCREEN 0 — HERO
+// ─────────────────────────────────────────────────────────────────────────────
+
 function Screen0({
   onStart,
   preQuestionAnswer,
@@ -220,20 +243,26 @@ function Screen0({
     { value: "no", label: "No" },
     { value: "not_sure", label: "Not sure" },
   ];
+
   return (
     <Card>
       <h1 className="text-[22px] font-bold text-text leading-tight">
         UPI dispute not resolved? Find out if your bank missed the RBI deadline.
       </h1>
       <p className="mt-3 text-[14px] text-text-secondary leading-relaxed">
-        Money deducted. Dispute raised. Still waiting. Find out if your bank has missed its RBI deadline — and what you can do about it right now.
+        Money deducted. Dispute raised. Still waiting. Find out if your bank has missed its
+        RBI deadline — and what you can do about it right now.
       </p>
       <div className="inline-block mt-4 px-3 py-1.5 rounded-full bg-primary-tint text-primary text-[12px] font-medium">
         📋 Based on RBI DPSS Circular 2019-20 · No login required
       </div>
+
+      {/* CTA */}
       <div className="mt-6">
         <PrimaryButton onClick={onStart}>Check My Dispute Status →</PrimaryButton>
       </div>
+
+      {/* Comprehension Lift pre-question */}
       <div className="mt-4 flex flex-col items-center">
         <div className="h-px w-20 bg-border" />
         <p className="mt-2 text-[12px] text-text-secondary text-center">
@@ -248,10 +277,10 @@ function Screen0({
                 onClick={() => onPreAnswer(o.value)}
                 className={`text-[12px] rounded-xl border transition-colors ${
                   active
-                    ? "bg-primary-tint border-primary text-primary"
+                    ? "bg-primary-tint border-primary text-primary font-semibold"
                     : "bg-transparent border-border text-text-secondary"
                 }`}
-                style={{ padding: "4px 6px" }}
+                style={{ padding: "4px 10px" }}
               >
                 {o.label}
               </button>
@@ -263,7 +292,10 @@ function Screen0({
   );
 }
 
-/* ────────────── SCREEN 1 ────────────── */
+// ─────────────────────────────────────────────────────────────────────────────
+// SCREEN 1 — BANK SELECTION
+// ─────────────────────────────────────────────────────────────────────────────
+
 function Screen1({
   bank,
   onChange,
@@ -277,10 +309,12 @@ function Screen1({
 }) {
   const [query, setQuery] = useState(bank);
   const [open, setOpen] = useState(false);
+
   const filtered = useMemo(
     () => BANKS.filter((b) => b.toLowerCase().includes(query.toLowerCase())),
     [query],
   );
+
   return (
     <Card>
       <ProgressLabel step={1} />
@@ -288,6 +322,7 @@ function Screen1({
         <label htmlFor="navdis-bank-search">Which bank holds your account?</label>
       </h1>
       <p className="text-[12px] text-text-secondary mt-1">The bank that debited your money</p>
+
       <div className="mt-4 relative">
         <input
           id="navdis-bank-search"
@@ -325,6 +360,7 @@ function Screen1({
           </ul>
         )}
       </div>
+
       <div className="mt-6 flex flex-col gap-3">
         <PrimaryButton onClick={onNext} disabled={!bank}>
           Next →
@@ -337,7 +373,10 @@ function Screen1({
   );
 }
 
-/* ────────────── SCREEN 2 ────────────── */
+// ─────────────────────────────────────────────────────────────────────────────
+// SCREEN 2 — FAILURE TYPE
+// ─────────────────────────────────────────────────────────────────────────────
+
 function Screen2({
   selected,
   onSelect,
@@ -382,7 +421,10 @@ function Screen2({
   );
 }
 
-/* ────────────── SCREEN 3 ────────────── */
+// ─────────────────────────────────────────────────────────────────────────────
+// SCREEN 3 — DATES + AMOUNT + UTR
+// ─────────────────────────────────────────────────────────────────────────────
+
 function Screen3({
   form,
   onChange,
@@ -395,27 +437,29 @@ function Screen3({
   onBack: () => void;
 }) {
   const today = todayISO();
-  const [touched, setTouched] = useState<{ [k: string]: boolean }>({});
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
 
-  const errAmount = form.amount !== "" && Number(form.amount) < 1 ? "Please enter the amount in rupees." : "";
-  const errTxDate = form.transactionDate && form.transactionDate > today ? "Date can't be in the future." : "";
+  const errAmount =
+    form.amount !== "" && Number(form.amount) < 1 ? "Please enter the amount in rupees." : "";
+  const errTxDate =
+    form.transactionDate && form.transactionDate > today ? "Date can't be in the future." : "";
   const errDisputeOrder =
     form.disputeDate && form.transactionDate && form.disputeDate < form.transactionDate
       ? "Complaint date can't be before the transaction date. Please check."
       : "";
-  const errDisputeFuture = form.disputeDate && form.disputeDate > today ? "Date can't be in the future." : "";
+  const errDisputeFuture =
+    form.disputeDate && form.disputeDate > today ? "Date can't be in the future." : "";
 
   const valid =
     form.amount !== "" &&
     Number(form.amount) >= 1 &&
-    form.transactionDate &&
-    form.disputeDate &&
+    !!form.transactionDate &&
+    !!form.disputeDate &&
     !errAmount &&
     !errTxDate &&
     !errDisputeOrder &&
     !errDisputeFuture;
 
-  // GPay warning: today - tx > 18 days
   const showGpay = useMemo(() => {
     if (!form.transactionDate) return false;
     const tx = new Date(form.transactionDate);
@@ -435,9 +479,13 @@ function Screen3({
       <div className="mt-5 space-y-5">
         {/* Amount */}
         <div>
-          <label htmlFor="navdis-amount" className="text-[13px] font-semibold text-text">Transaction amount</label>
+          <label htmlFor="navdis-amount" className="text-[13px] font-semibold text-text">
+            Transaction amount
+          </label>
           <div className="mt-1.5 relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary text-[14px]">₹</span>
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary text-[14px]">
+              ₹
+            </span>
             <input
               id="navdis-amount"
               type="number"
@@ -448,7 +496,9 @@ function Screen3({
               onBlur={() => setTouched({ ...touched, amount: true })}
               placeholder="e.g. 2500"
               className={`w-full h-12 pl-7 pr-3 rounded-md border bg-surface text-[14px] focus:outline-none focus:ring-2 focus:ring-primary-tint ${
-                touched.amount && errAmount ? "border-red" : "border-border focus:border-primary"
+                touched.amount && errAmount
+                  ? "border-red"
+                  : "border-border focus:border-primary"
               }`}
             />
           </div>
@@ -459,7 +509,9 @@ function Screen3({
 
         {/* Transaction date */}
         <div>
-          <label htmlFor="navdis-tx-date" className="text-[13px] font-semibold text-text">Date of failed transaction</label>
+          <label htmlFor="navdis-tx-date" className="text-[13px] font-semibold text-text">
+            Date of failed transaction
+          </label>
           <input
             id="navdis-tx-date"
             type="date"
@@ -468,7 +520,9 @@ function Screen3({
             onChange={(e) => onChange({ transactionDate: e.target.value })}
             onBlur={() => setTouched({ ...touched, transactionDate: true })}
             className={`mt-1.5 w-full h-12 px-3 rounded-md border bg-surface text-[14px] focus:outline-none focus:ring-2 focus:ring-primary-tint ${
-              touched.transactionDate && errTxDate ? "border-red" : "border-border focus:border-primary"
+              touched.transactionDate && errTxDate
+                ? "border-red"
+                : "border-border focus:border-primary"
             }`}
           />
           {touched.transactionDate && errTxDate && (
@@ -476,15 +530,19 @@ function Screen3({
           )}
         </div>
 
+        {/* GPay 21-day warning */}
         {showGpay && (
           <div className="rounded-lg border-l-4 border-yellow bg-yellow-bg p-3 text-[13px] text-yellow-text leading-relaxed">
-            <strong>⚠️ Using GPay?</strong> It stops accepting new complaints after 21 days from the transaction date. If you haven't filed through the app yet, do it today.
+            <strong>⚠️ Using GPay?</strong> It stops accepting new complaints after 21 days from
+            the transaction date. If you haven't filed through the app yet, do it today.
           </div>
         )}
 
         {/* Dispute date */}
         <div>
-          <label htmlFor="navdis-dispute-date" className="text-[13px] font-semibold text-text">Date you raised the complaint</label>
+          <label htmlFor="navdis-dispute-date" className="text-[13px] font-semibold text-text">
+            Date you raised the complaint
+          </label>
           <p className="text-[12px] text-text-secondary mt-0.5">
             When did you first report this to your bank or UPI app?
           </p>
@@ -502,11 +560,13 @@ function Screen3({
             }`}
           />
           {touched.disputeDate && (errDisputeOrder || errDisputeFuture) && (
-            <p className="mt-1 text-[12px] text-red">{errDisputeOrder || errDisputeFuture}</p>
+            <p className="mt-1 text-[12px] text-red">
+              {errDisputeOrder || errDisputeFuture}
+            </p>
           )}
         </div>
 
-        {/* UTR (optional) */}
+        {/* UTR — optional */}
         <div>
           <label htmlFor="navdis-utr" className="text-[13px] font-semibold text-text">
             Transaction reference (UTR){" "}
@@ -538,7 +598,10 @@ function Screen3({
   );
 }
 
-/* ────────────── SCREEN 4 ────────────── */
+// ─────────────────────────────────────────────────────────────────────────────
+// SCREEN 4 — SUMMARY / GROUNDING MOMENT
+// ─────────────────────────────────────────────────────────────────────────────
+
 function Screen4({
   form,
   onNext,
@@ -555,16 +618,25 @@ function Screen4({
     Math.floor((new Date(today).getTime() - disputeDate.getTime()) / 86400000),
   );
   const dayName = disputeDate.toLocaleDateString("en-IN", { weekday: "long" });
-  const longDate = disputeDate.toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
+  const longDate = disputeDate.toLocaleDateString("en-IN", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
 
   return (
     <Card>
       <h1 className="text-[18px] font-bold text-text">Your dispute with {form.bank}</h1>
       <p className="text-[14px] text-text-secondary mt-1">
-        ₹{Number(form.amount).toLocaleString("en-IN")} · reported {daysAgo} day{daysAgo === 1 ? "" : "s"} ago
+        ₹{Number(form.amount).toLocaleString("en-IN")} · reported {daysAgo}{" "}
+        day{daysAgo === 1 ? "" : "s"} ago
       </p>
       <p className="text-[14px] text-text-secondary mt-3 leading-relaxed">
-        You raised a complaint on <strong className="text-text">{dayName}, {longDate}</strong>. That was {daysAgo} calendar day{daysAgo === 1 ? "" : "s"} ago.
+        You raised a complaint on{" "}
+        <strong className="text-text">
+          {dayName}, {longDate}
+        </strong>
+        . That was {daysAgo} calendar day{daysAgo === 1 ? "" : "s"} ago.
       </p>
       <div className="mt-6 flex flex-col gap-3">
         <PrimaryButton onClick={onNext}>Check my rights →</PrimaryButton>
@@ -576,9 +648,13 @@ function Screen4({
   );
 }
 
-/* ────────────── SCREEN 5 ────────────── */
+// ─────────────────────────────────────────────────────────────────────────────
+// SCREEN 5 — LOADING (circular ring + milestone rows)
+// ─────────────────────────────────────────────────────────────────────────────
+
 function Screen5({ onDone }: { onDone: () => void }) {
   const [shown, setShown] = useState(0);
+
   useEffect(() => {
     const t1 = setTimeout(() => setShown(1), 300);
     const t2 = setTimeout(() => setShown(2), 700);
@@ -588,15 +664,16 @@ function Screen5({ onDone }: { onDone: () => void }) {
   }, [onDone]);
 
   const milestones = [
-    { icon: "📅", label: "RBI timeline mapped", tint: "#E3FCEF", delay: 300 },
-    { icon: "🔍", label: "Ombudsman window checked", tint: "#DEEBFF", delay: 700 },
-    { icon: "✉️", label: "Rights summary ready", tint: "#FFFAE6", delay: 1100 },
+    { icon: "📅", label: "RBI timeline mapped",       tint: "#E3FCEF" },
+    { icon: "🔍", label: "Ombudsman window checked",   tint: "#DEEBFF" },
+    { icon: "✉️", label: "Rights summary ready",       tint: "#FFFAE6" },
   ];
 
   return (
     <Card>
       <p className="text-[12px] text-text-muted text-center">UPI Dispute Navigator</p>
 
+      {/* Circular progress ring */}
       <div className="mt-4 flex justify-center">
         <div style={{ position: "relative", width: 80, height: 80 }}>
           <svg width="80" height="80" viewBox="0 0 80 80">
@@ -630,6 +707,7 @@ function Screen5({ onDone }: { onDone: () => void }) {
         </div>
       </div>
 
+      {/* Milestone rows */}
       <div className="mt-5 space-y-3 min-h-[140px]">
         {milestones.map((m, i) => (
           <div
@@ -637,7 +715,8 @@ function Screen5({ onDone }: { onDone: () => void }) {
             className="flex items-center gap-3"
             style={{
               opacity: shown > i ? 1 : 0,
-              animation: shown > i ? "navdis-milestone-in 0.3s ease-out forwards" : undefined,
+              transform: shown > i ? "translateX(0)" : "translateX(-8px)",
+              transition: "opacity 0.25s ease-out, transform 0.25s ease-out",
             }}
           >
             <span
@@ -655,7 +734,9 @@ function Screen5({ onDone }: { onDone: () => void }) {
             >
               {m.icon}
             </span>
-            <span style={{ fontSize: 13, color: "var(--text)", fontWeight: 500 }}>{m.label}</span>
+            <span style={{ fontSize: 13, color: "var(--text)", fontWeight: 500 }}>
+              {m.label}
+            </span>
           </div>
         ))}
       </div>
@@ -663,13 +744,16 @@ function Screen5({ onDone }: { onDone: () => void }) {
   );
 }
 
-/* ────────────── SCREEN 6 ────────────── */
-function Screen6({ 
-  form, 
+// ─────────────────────────────────────────────────────────────────────────────
+// SCREEN 6 — RESULTS
+// ─────────────────────────────────────────────────────────────────────────────
+
+function Screen6({
+  form,
   onReset,
-  preQuestionAnswer 
-}: { 
-  form: FormState; 
+  preQuestionAnswer,
+}: {
+  form: FormState;
   onReset: () => void;
   preQuestionAnswer: PreQuestionAnswer;
 }) {
@@ -694,11 +778,35 @@ function Screen6({
   const [templateLoading, setTemplateLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [surveyResponse, setSurveyResponse] = useState<"yes" | "no" | null>(null);
-  const [surveyHidden, setSurveyHidden] = useState(false);
 
   const needsTemplate = result.windowStatus !== "GREEN";
   const isBankUnlisted = form.bank === "My bank isn't listed";
 
+  // ── AI: explanation ──────────────────────────────────────────────
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const r = await callAi({
+          data: {
+            kind: "explanation",
+            bankName: form.bank,
+            status: result.windowStatus,
+            failureType: failureTypeLabel(form.failureType as FailureType),
+            disputeDate: form.disputeDate,
+            dayCount: result.dayCount,
+          },
+        });
+        if (!cancelled) setExplanation(r.text);
+      } catch {
+        if (!cancelled) setExplFailed(true);
+      }
+    })();
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // ── AI: template ─────────────────────────────────────────────────
   const fetchTemplate = async () => {
     setTemplateLoading(true);
     setTemplateFailed(false);
@@ -725,42 +833,20 @@ function Screen6({
   };
 
   useEffect(() => {
-    let cancel = false;
-    (async () => {
-      try {
-        const r = await callAi({
-          data: {
-            kind: "explanation",
-            bankName: form.bank,
-            status: result.windowStatus,
-            failureType: failureTypeLabel(form.failureType as FailureType),
-            disputeDate: form.disputeDate,
-            dayCount: result.dayCount,
-          },
-        });
-        if (!cancel) setExplanation(r.text);
-      } catch {
-        if (!cancel) setExplFailed(true);
-      }
-    })();
     if (needsTemplate) fetchTemplate();
-    return () => {
-      cancel = true;
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // ── Status colour map ─────────────────────────────────────────────
   const statusStyles = (() => {
     switch (result.windowStatus) {
-      case "GREEN":
-        return { bg: "bg-green-bg", text: "text-green", dot: "bg-green" };
-      case "YELLOW":
-        return { bg: "bg-yellow-bg", text: "text-yellow-text", dot: "bg-yellow" };
-      default:
-        return { bg: "bg-red-bg", text: "text-red", dot: "bg-red" };
+      case "GREEN":  return { bg: "bg-green-bg",  text: "text-green",       dot: "bg-green" };
+      case "YELLOW": return { bg: "bg-yellow-bg", text: "text-yellow-text", dot: "bg-yellow" };
+      default:       return { bg: "bg-red-bg",    text: "text-red",         dot: "bg-red" };
     }
   })();
 
+  // ── Share payload ─────────────────────────────────────────────────
   const sharePayload = `UPI Dispute Status — ${form.bank}
 Status: Day ${result.dayCount} — ${result.statusHeadline}
 Amount: ₹${Number(form.amount).toLocaleString("en-IN")} | Raised: ${form.disputeDate}
@@ -769,19 +855,15 @@ RBI reference: DPSS Circular CO.DPSS.EPPD No.G-3/02.14.003/2019-20
 (Generated by UPI Dispute Navigator — ${typeof window !== "undefined" ? window.location.href : ""})`;
 
   const handleShare = async () => {
-    if (typeof navigator !== "undefined" && (navigator as any).share) {
+    if (typeof navigator !== "undefined" && (navigator as unknown as { share?: (d: unknown) => Promise<void> }).share) {
       try {
-        await (navigator as any).share({ text: sharePayload });
-      } catch {
-        /* user cancelled */
-      }
+        await (navigator as unknown as { share: (d: unknown) => Promise<void> }).share({ text: sharePayload });
+      } catch { /* user cancelled */ }
     } else {
       try {
         await navigator.clipboard.writeText(sharePayload);
         alert("Status copied to clipboard");
-      } catch {
-        /* ignore */
-      }
+      } catch { /* ignore */ }
     }
   };
 
@@ -802,57 +884,64 @@ RBI reference: DPSS Circular CO.DPSS.EPPD No.G-3/02.14.003/2019-20
       subject = lines[subjectIdx].replace(/^subject:\s*/i, "").trim();
       body = lines.slice(subjectIdx + 1).join("\n").replace(/^\n+/, "");
     }
-    const url = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    window.open(url, "_blank");
+    window.open(`mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, "_blank");
   };
 
-const recordSurvey = async (v: "yes" | "no") => {
-  setSurveyResponse(v);
-
-  // Log to Supabase — async, never blocks the UI
-  if (result) {
+  // ── Survey + Supabase log ─────────────────────────────────────────
+  const recordSurvey = async (v: "yes" | "no") => {
+    if (surveyResponse) return; // prevent double-tap
+    setSurveyResponse(v);
     await logSession({
       bank: form.bank,
-      failure_type: form.failureType,
+      failure_type: form.failureType as string,
       window_status: result.windowStatus,
       day_count: result.dayCount,
-      pre_question_answer: preQuestionAnswer ?? "skipped", // from hero screen
+      pre_question_answer: preQuestionAnswer,
       post_question_answer: v === "yes" ? "yes" : "not_yet",
     });
-  }
-};
+  };
 
+  // ─────────────────────────────────────────────────────────────────
   return (
     <div className="space-y-3 pb-20">
-      {/* ZONE A — STATUS */}
+
+      {/* ── ZONE A — STATUS ─────────────────────────────────────── */}
       <Card>
+        {/* Status pill */}
         <span
           className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-bold tracking-wider uppercase ${statusStyles.bg} ${statusStyles.text}`}
         >
           <span className={`w-1.5 h-1.5 rounded-full ${statusStyles.dot}`} />
           {result.statusLabel}
         </span>
+
+        {/* Day count headline */}
         <h1 className="mt-3 text-[20px] font-bold text-text leading-snug">
           {result.statusHeadline}
         </h1>
+
+        {/* Bank deadline (GREEN only) */}
         {result.windowStatus === "GREEN" && (
           <p className="mt-1 text-[13px] text-text-secondary">
-            Your bank's deadline: {addWorkingDays(form.disputeDate, 7)}
+            Your bank's deadline:{" "}
+            <strong>{addWorkingDays(form.disputeDate, 7)}</strong>
           </p>
         )}
+
+        {/* Ombudsman countdown + bank deadline (YELLOW only) */}
         {result.windowStatus === "YELLOW" && (
           <>
             <p className="mt-1 text-[13px] text-text-secondary">
               You have {Math.max(0, 30 - result.dayCount)} days until Ombudsman eligibility.
             </p>
-            <p
-              className="mt-1 text-[13px] font-semibold"
-              style={{ color: "#974F0C" }}
-            >
-              Your bank's final deadline: {addWorkingDays(form.disputeDate, 7)}
+            <p className="mt-1 text-[13px] font-semibold" style={{ color: "#974F0C" }}>
+              Your bank's final deadline:{" "}
+              <strong>{addWorkingDays(form.disputeDate, 7)}</strong>
             </p>
           </>
         )}
+
+        {/* NAVDIS AI card */}
         <div
           className="overflow-hidden"
           style={{
@@ -862,6 +951,7 @@ const recordSurvey = async (v: "yes" | "no") => {
             borderRadius: 10,
           }}
         >
+          {/* Card header */}
           <div
             className="flex items-center"
             style={{
@@ -894,15 +984,11 @@ const recordSurvey = async (v: "yes" | "no") => {
               Personalised guidance
             </span>
           </div>
+
+          {/* Card body */}
           <div style={{ padding: "12px 14px" }}>
             {explanation ? (
-              <p
-                style={{
-                  fontSize: 14,
-                  lineHeight: 1.6,
-                  color: "var(--text)",
-                }}
-              >
+              <p style={{ fontSize: 14, lineHeight: 1.6, color: "var(--text)" }}>
                 {explanation}
               </p>
             ) : explFailed ? (
@@ -911,19 +997,22 @@ const recordSurvey = async (v: "yes" | "no") => {
               </p>
             ) : (
               <div>
+                {/* Typing indicator */}
                 <div className="flex items-center gap-2">
-                  <span
-                    className="navdis-dot"
-                    style={{ width: 6, height: 6, borderRadius: "50%", background: "#0052CC", display: "inline-block" }}
-                  />
-                  <span
-                    className="navdis-dot"
-                    style={{ width: 6, height: 6, borderRadius: "50%", background: "#0052CC", display: "inline-block", animationDelay: "0.2s" }}
-                  />
-                  <span
-                    className="navdis-dot"
-                    style={{ width: 6, height: 6, borderRadius: "50%", background: "#0052CC", display: "inline-block", animationDelay: "0.4s" }}
-                  />
+                  {[0, 0.2, 0.4].map((delay, i) => (
+                    <span
+                      key={i}
+                      className="navdis-dot"
+                      style={{
+                        width: 6,
+                        height: 6,
+                        borderRadius: "50%",
+                        background: "#0052CC",
+                        display: "inline-block",
+                        animationDelay: `${delay}s`,
+                      }}
+                    />
+                  ))}
                 </div>
                 <p style={{ marginTop: 8, fontSize: 12, color: "var(--text-muted)" }}>
                   Generating your personalised guidance...
@@ -932,6 +1021,8 @@ const recordSurvey = async (v: "yes" | "no") => {
             )}
           </div>
         </div>
+
+        {/* Unlisted bank note */}
         {isBankUnlisted && (
           <p className="mt-3 text-[12px] text-text-muted">
             We don't have bank-specific data, but RBI timelines apply to all UPI-enabled banks.
@@ -939,7 +1030,7 @@ const recordSurvey = async (v: "yes" | "no") => {
         )}
       </Card>
 
-      {/* ZONE B — RIGHTS */}
+      {/* ── ZONE B — RBI RIGHTS ─────────────────────────────────── */}
       <Card>
         <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-text-muted">
           Your RBI Rights
@@ -956,12 +1047,14 @@ const recordSurvey = async (v: "yes" | "no") => {
         </ul>
       </Card>
 
-      {/* ZONE C — ACTION */}
+      {/* ── ZONE C — ACTION ─────────────────────────────────────── */}
       <Card>
         <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-text-muted">
           What to do now
         </p>
-        <h3 className="mt-3 text-[14px] font-bold text-text">{result.recommendedAction.label}</h3>
+        <h3 className="mt-3 text-[14px] font-bold text-text">
+          {result.recommendedAction.label}
+        </h3>
         <p className="mt-1.5 text-[13px] text-text-secondary leading-relaxed">
           {result.recommendedAction.description}
         </p>
@@ -976,14 +1069,20 @@ const recordSurvey = async (v: "yes" | "no") => {
           ))}
         </ol>
 
-        {result.compensationOwed > 0 && (result.windowStatus === "YELLOW" || result.windowStatus === "RED_ESCALATE") && (
-          <div className="mt-5 rounded-lg border-l-4 border-yellow bg-yellow-bg p-3.5 text-[13px] text-yellow-text leading-relaxed">
-            <strong>💰 You may be owed ₹{result.compensationOwed.toLocaleString("en-IN")} in compensation.</strong>
-            <br />
-            Request this explicitly from your bank — it is not paid automatically.
-          </div>
-        )}
+        {/* Compensation callout — YELLOW and RED_ESCALATE only */}
+        {result.compensationOwed > 0 &&
+          (result.windowStatus === "YELLOW" || result.windowStatus === "RED_ESCALATE") && (
+            <div className="mt-5 rounded-lg border-l-4 border-yellow bg-yellow-bg p-3.5 text-[13px] text-yellow-text leading-relaxed">
+              <strong>
+                💰 You may be owed ₹{result.compensationOwed.toLocaleString("en-IN")} in
+                compensation.
+              </strong>
+              <br />
+              Request this explicitly from your bank — it is not paid automatically.
+            </div>
+          )}
 
+        {/* Escalation template — YELLOW, RED_ESCALATE, RED_OMBUDSMAN */}
         {needsTemplate && (
           <>
             <hr className="my-5 border-border" />
@@ -991,7 +1090,9 @@ const recordSurvey = async (v: "yes" | "no") => {
               Escalation Email Template
             </p>
             {templateLoading && (
-              <p className="mt-3 text-[13px] italic text-text-muted">Generating your template…</p>
+              <p className="mt-3 text-[13px] italic text-text-muted">
+                Generating your template…
+              </p>
             )}
             {templateFailed && !templateLoading && (
               <div className="mt-3">
@@ -1035,6 +1136,7 @@ const recordSurvey = async (v: "yes" | "no") => {
           </>
         )}
 
+        {/* Ombudsman CTA — RED_OMBUDSMAN only */}
         {result.windowStatus === "RED_OMBUDSMAN" && (
           <a
             href="https://cms.rbi.org.in"
@@ -1047,7 +1149,7 @@ const recordSurvey = async (v: "yes" | "no") => {
         )}
       </Card>
 
-      {/* SHARE + RESET */}
+      {/* ── SHARE + RESET ────────────────────────────────────────── */}
       <div className="pt-2 space-y-3">
         <button
           onClick={handleShare}
@@ -1055,21 +1157,14 @@ const recordSurvey = async (v: "yes" | "no") => {
         >
           Share this status →
         </button>
-        <button
-          onClick={onReset}
-          className="block mx-auto text-[13px] text-text-secondary"
-        >
+        <button onClick={onReset} className="block mx-auto text-[13px] text-text-secondary">
           ← Check another dispute
         </button>
       </div>
 
-      {/* STICKY EXIT SURVEY */}
-      {!surveyHidden && (
-        <div
-          className={`fixed bottom-0 left-0 right-0 z-30 bg-surface border-t border-border px-4 py-3 shadow-[0_-2px_8px_rgba(0,0,0,0.06)] ${
-            surveyResponse ? "navdis-fade-out" : "navdis-fade-in"
-          }`}
-        >
+      {/* ── STICKY EXIT SURVEY ───────────────────────────────────── */}
+      {!surveyResponse && (
+        <div className="fixed bottom-0 left-0 right-0 z-30 bg-surface border-t border-border px-4 py-3 shadow-[0_-2px_8px_rgba(0,0,0,0.06)] navdis-fade-in">
           <div className="max-w-[480px] mx-auto">
             <p className="text-[13px] font-semibold text-text text-center">
               Do you now know what to do about your dispute?
