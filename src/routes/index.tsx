@@ -806,14 +806,85 @@ const recordSurvey = async (v: "yes" | "no") => {
             </p>
           </>
         )}
-        <hr className="my-4 border-border" />
-        <p className="text-[14px] italic text-text-secondary leading-relaxed">
-          {explanation
-            ? explanation
-            : explFailed
-              ? "Personalised guidance unavailable — your rights and action below are accurate."
-              : "Personalised guidance loading…"}
-        </p>
+        <div
+          className="overflow-hidden"
+          style={{
+            marginTop: 16,
+            background: explFailed ? "#FFFFFF" : "#F0F4FF",
+            border: `1.5px solid ${explFailed ? "#DFE1E6" : "#C7D7F5"}`,
+            borderRadius: 10,
+          }}
+        >
+          <div
+            className="flex items-center"
+            style={{
+              height: 32,
+              padding: "0 12px",
+              gap: 8,
+              background: explFailed ? "#DFE1E6" : "#0052CC",
+            }}
+          >
+            <span style={{ fontSize: 14 }}>🤖</span>
+            <span
+              style={{
+                color: explFailed ? "var(--text-muted)" : "#FFFFFF",
+                fontSize: 11,
+                fontWeight: 700,
+                letterSpacing: "0.06em",
+                textTransform: "uppercase",
+              }}
+            >
+              NAVDIS AI
+            </span>
+            <span
+              style={{
+                marginLeft: "auto",
+                color: explFailed ? "var(--text-muted)" : "rgba(255,255,255,0.65)",
+                fontSize: 10,
+                fontStyle: "italic",
+              }}
+            >
+              Personalised guidance
+            </span>
+          </div>
+          <div style={{ padding: "12px 14px" }}>
+            {explanation ? (
+              <p
+                style={{
+                  fontSize: 14,
+                  lineHeight: 1.6,
+                  color: "var(--text)",
+                }}
+              >
+                {explanation}
+              </p>
+            ) : explFailed ? (
+              <p style={{ fontSize: 12, color: "var(--text-muted)" }}>
+                Personalised guidance unavailable — your rights and action below are accurate.
+              </p>
+            ) : (
+              <div>
+                <div className="flex items-center gap-2">
+                  <span
+                    className="navdis-dot"
+                    style={{ width: 6, height: 6, borderRadius: "50%", background: "#0052CC", display: "inline-block" }}
+                  />
+                  <span
+                    className="navdis-dot"
+                    style={{ width: 6, height: 6, borderRadius: "50%", background: "#0052CC", display: "inline-block", animationDelay: "0.2s" }}
+                  />
+                  <span
+                    className="navdis-dot"
+                    style={{ width: 6, height: 6, borderRadius: "50%", background: "#0052CC", display: "inline-block", animationDelay: "0.4s" }}
+                  />
+                </div>
+                <p style={{ marginTop: 8, fontSize: 12, color: "var(--text-muted)" }}>
+                  Generating your personalised guidance...
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
         {isBankUnlisted && (
           <p className="mt-3 text-[12px] text-text-muted">
             We don't have bank-specific data, but RBI timelines apply to all UPI-enabled banks.
