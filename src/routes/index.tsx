@@ -586,12 +586,6 @@ function Screen5({ onDone }: { onDone: () => void }) {
     return () => [t1, t2, t3, t4].forEach(clearTimeout);
   }, [onDone]);
 
-  const items = [
-    "Calculating your RBI timeline",
-    "Checking Ombudsman eligibility",
-    "Generating your rights summary",
-  ];
-
   const milestones = [
     { icon: "📅", label: "RBI timeline mapped", tint: "#E3FCEF", delay: 300 },
     { icon: "🔍", label: "Ombudsman window checked", tint: "#DEEBFF", delay: 700 },
