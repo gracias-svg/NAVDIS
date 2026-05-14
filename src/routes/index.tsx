@@ -759,10 +759,21 @@ RBI reference: DPSS Circular CO.DPSS.EPPD No.G-3/02.14.003/2019-20
     window.open(url, "_blank");
   };
 
-  const recordSurvey = (v: "yes" | "no") => {
-    setSurveyResponse(v);
-    setTimeout(() => setSurveyHidden(true), 200);
-  };
+const recordSurvey = async (v: "yes" | "no") => {
+  setSurveyResponse(v);
+
+  // Log to Supabase — async, never blocks the UI
+  if (result) {
+    await logSession({
+      bank: form.bank,
+      failure_type: form.failureType,
+      window_status: result.windowStatus,
+      day_count: result.dayCount,
+      pre_question_answer: preQuestionAnswer ?? "skipped", // from hero screen
+      post_question_answer: v === "yes" ? "yes" : "not_yet",
+    });
+  }
+};
 
   return (
     <div className="space-y-3 pb-20">
