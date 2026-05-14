@@ -126,25 +126,23 @@ function NavdisApp() {
 function BrandHeader() {
   return (
     <div className="flex items-center gap-2.5 mb-5">
-      <div className="w-9 h-9 flex items-center justify-center shrink-0">
-        <svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="navGreen" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor="#00C853" />
-              <stop offset="100%" stopColor="#00875A" />
-            </linearGradient>
-            <linearGradient id="navBlue" x1="1" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#0052CC" />
-              <stop offset="100%" stopColor="#0747A6" />
-            </linearGradient>
-          </defs>
-          <path
-            d="M6 4 L6 28 L10 28 L10 12 L26 28 L30 28 L30 8 L26 8 L26 24 L10 8 Z"
-            fill="url(#navBlue)"
-          />
-          <polygon points="18,14 24,20 18,20" fill="url(#navGreen)" opacity="0.9" />
-          <polygon points="18,22 12,16 18,16" fill="url(#navBlue)" opacity="0.7" />
-        </svg>
+      <div
+        className="shrink-0 overflow-hidden"
+        style={{
+          width: "38px",
+          height: "38px",
+          background: "#111827",
+          borderRadius: "10px",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.20)",
+        }}
+      >
+        <img
+          src="/navdis-logo-3d.png"
+          alt="NAVDIS"
+          width={38}
+          height={38}
+          style={{ objectFit: "cover", display: "block", width: "38px", height: "38px" }}
+        />
       </div>
       <div className="flex flex-col leading-none">
         <span className="text-[12px] font-semibold tracking-[0.08em] uppercase text-primary">
@@ -152,7 +150,7 @@ function BrandHeader() {
         </span>
         <span
           className="mt-0.5 uppercase text-text-muted"
-          style={{ fontSize: "9px", letterSpacing: "0.5px", fontWeight: 500 }}
+          style={{ fontSize: "9px", letterSpacing: "0.8px", fontWeight: 500 }}
         >
           Navigate. Act. Protect.
         </span>
