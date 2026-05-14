@@ -586,37 +586,75 @@ function Screen5({ onDone }: { onDone: () => void }) {
     return () => [t1, t2, t3, t4].forEach(clearTimeout);
   }, [onDone]);
 
-  const items = [
-    "Calculating your RBI timeline",
-    "Checking Ombudsman eligibility",
-    "Generating your rights summary",
+  const milestones = [
+    { icon: "📅", label: "RBI timeline mapped", tint: "#E3FCEF", delay: 300 },
+    { icon: "🔍", label: "Ombudsman window checked", tint: "#DEEBFF", delay: 700 },
+    { icon: "✉️", label: "Rights summary ready", tint: "#FFFAE6", delay: 1100 },
   ];
 
   return (
     <Card>
       <p className="text-[12px] text-text-muted text-center">UPI Dispute Navigator</p>
-      <div className="mt-4 w-full h-1 bg-code-bg rounded-[2px] overflow-hidden">
-        <div
-          className="h-full bg-primary rounded-[2px]"
-          style={{ width: "100%", transition: "width 1.5s linear", animation: "navdis-progress 1.5s linear forwards" }}
-        />
-      </div>
-      <div className="mt-5 space-y-3 min-h-[140px]">
-        {items.map((it, i) => (
+
+      <div className="mt-4 flex justify-center">
+        <div style={{ position: "relative", width: 80, height: 80 }}>
+          <svg width="80" height="80" viewBox="0 0 80 80">
+            <circle cx="40" cy="40" r="34" fill="none" stroke="var(--border)" strokeWidth="4" />
+            <circle
+              cx="40"
+              cy="40"
+              r="34"
+              fill="none"
+              stroke="#0052CC"
+              strokeWidth="4"
+              strokeLinecap="round"
+              strokeDasharray="213.6"
+              strokeDashoffset="213.6"
+              transform="rotate(-90 40 40)"
+              style={{ animation: "navdis-ring 1.5s linear forwards" }}
+            />
+          </svg>
           <div
-            key={it}
-            className={`flex items-center gap-3 text-[14px] text-text-secondary transition-opacity ${
-              shown > i ? "opacity-100" : "opacity-0"
-            }`}
+            style={{
+              position: "absolute",
+              inset: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 28,
+            }}
+          >
+            ⚖️
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-5 space-y-3 min-h-[140px]">
+        {milestones.map((m, i) => (
+          <div
+            key={m.label}
+            className="flex items-center gap-3"
+            style={{
+              opacity: shown > i ? 1 : 0,
+              animation: shown > i ? "navdis-milestone-in 0.3s ease-out forwards" : undefined,
+            }}
           >
             <span
-              className={`w-5 h-5 rounded-full bg-green-bg text-green flex items-center justify-center text-xs font-bold ${
-                shown > i ? "navdis-pop" : ""
-              }`}
+              style={{
+                width: 24,
+                height: 24,
+                borderRadius: "50%",
+                background: m.tint,
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 13,
+                flexShrink: 0,
+              }}
             >
-              ✓
+              {m.icon}
             </span>
-            {it}
+            <span style={{ fontSize: 13, color: "var(--text)", fontWeight: 500 }}>{m.label}</span>
           </div>
         ))}
       </div>
@@ -806,14 +844,85 @@ const recordSurvey = async (v: "yes" | "no") => {
             </p>
           </>
         )}
-        <hr className="my-4 border-border" />
-        <p className="text-[14px] italic text-text-secondary leading-relaxed">
-          {explanation
-            ? explanation
-            : explFailed
-              ? "Personalised guidance unavailable — your rights and action below are accurate."
-              : "Personalised guidance loading…"}
-        </p>
+        <div
+          className="overflow-hidden"
+          style={{
+            marginTop: 16,
+            background: explFailed ? "#FFFFFF" : "#F0F4FF",
+            border: `1.5px solid ${explFailed ? "#DFE1E6" : "#C7D7F5"}`,
+            borderRadius: 10,
+          }}
+        >
+          <div
+            className="flex items-center"
+            style={{
+              height: 32,
+              padding: "0 12px",
+              gap: 8,
+              background: explFailed ? "#DFE1E6" : "#0052CC",
+            }}
+          >
+            <span style={{ fontSize: 14 }}>🤖</span>
+            <span
+              style={{
+                color: explFailed ? "var(--text-muted)" : "#FFFFFF",
+                fontSize: 11,
+                fontWeight: 700,
+                letterSpacing: "0.06em",
+                textTransform: "uppercase",
+              }}
+            >
+              NAVDIS AI
+            </span>
+            <span
+              style={{
+                marginLeft: "auto",
+                color: explFailed ? "var(--text-muted)" : "rgba(255,255,255,0.65)",
+                fontSize: 10,
+                fontStyle: "italic",
+              }}
+            >
+              Personalised guidance
+            </span>
+          </div>
+          <div style={{ padding: "12px 14px" }}>
+            {explanation ? (
+              <p
+                style={{
+                  fontSize: 14,
+                  lineHeight: 1.6,
+                  color: "var(--text)",
+                }}
+              >
+                {explanation}
+              </p>
+            ) : explFailed ? (
+              <p style={{ fontSize: 12, color: "var(--text-muted)" }}>
+                Personalised guidance unavailable — your rights and action below are accurate.
+              </p>
+            ) : (
+              <div>
+                <div className="flex items-center gap-2">
+                  <span
+                    className="navdis-dot"
+                    style={{ width: 6, height: 6, borderRadius: "50%", background: "#0052CC", display: "inline-block" }}
+                  />
+                  <span
+                    className="navdis-dot"
+                    style={{ width: 6, height: 6, borderRadius: "50%", background: "#0052CC", display: "inline-block", animationDelay: "0.2s" }}
+                  />
+                  <span
+                    className="navdis-dot"
+                    style={{ width: 6, height: 6, borderRadius: "50%", background: "#0052CC", display: "inline-block", animationDelay: "0.4s" }}
+                  />
+                </div>
+                <p style={{ marginTop: 8, fontSize: 12, color: "var(--text-muted)" }}>
+                  Generating your personalised guidance...
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
         {isBankUnlisted && (
           <p className="mt-3 text-[12px] text-text-muted">
             We don't have bank-specific data, but RBI timelines apply to all UPI-enabled banks.
