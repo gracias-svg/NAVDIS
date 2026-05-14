@@ -592,31 +592,75 @@ function Screen5({ onDone }: { onDone: () => void }) {
     "Generating your rights summary",
   ];
 
+  const milestones = [
+    { icon: "📅", label: "RBI timeline mapped", tint: "#E3FCEF", delay: 300 },
+    { icon: "🔍", label: "Ombudsman window checked", tint: "#DEEBFF", delay: 700 },
+    { icon: "✉️", label: "Rights summary ready", tint: "#FFFAE6", delay: 1100 },
+  ];
+
   return (
     <Card>
       <p className="text-[12px] text-text-muted text-center">UPI Dispute Navigator</p>
-      <div className="mt-4 w-full h-1 bg-code-bg rounded-[2px] overflow-hidden">
-        <div
-          className="h-full bg-primary rounded-[2px]"
-          style={{ width: "100%", transition: "width 1.5s linear", animation: "navdis-progress 1.5s linear forwards" }}
-        />
-      </div>
-      <div className="mt-5 space-y-3 min-h-[140px]">
-        {items.map((it, i) => (
+
+      <div className="mt-4 flex justify-center">
+        <div style={{ position: "relative", width: 80, height: 80 }}>
+          <svg width="80" height="80" viewBox="0 0 80 80">
+            <circle cx="40" cy="40" r="34" fill="none" stroke="var(--border)" strokeWidth="4" />
+            <circle
+              cx="40"
+              cy="40"
+              r="34"
+              fill="none"
+              stroke="#0052CC"
+              strokeWidth="4"
+              strokeLinecap="round"
+              strokeDasharray="213.6"
+              strokeDashoffset="213.6"
+              transform="rotate(-90 40 40)"
+              style={{ animation: "navdis-ring 1.5s linear forwards" }}
+            />
+          </svg>
           <div
-            key={it}
-            className={`flex items-center gap-3 text-[14px] text-text-secondary transition-opacity ${
-              shown > i ? "opacity-100" : "opacity-0"
-            }`}
+            style={{
+              position: "absolute",
+              inset: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 28,
+            }}
+          >
+            ⚖️
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-5 space-y-3 min-h-[140px]">
+        {milestones.map((m, i) => (
+          <div
+            key={m.label}
+            className="flex items-center gap-3"
+            style={{
+              opacity: shown > i ? 1 : 0,
+              animation: shown > i ? "navdis-milestone-in 0.3s ease-out forwards" : undefined,
+            }}
           >
             <span
-              className={`w-5 h-5 rounded-full bg-green-bg text-green flex items-center justify-center text-xs font-bold ${
-                shown > i ? "navdis-pop" : ""
-              }`}
+              style={{
+                width: 24,
+                height: 24,
+                borderRadius: "50%",
+                background: m.tint,
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 13,
+                flexShrink: 0,
+              }}
             >
-              ✓
+              {m.icon}
             </span>
-            {it}
+            <span style={{ fontSize: 13, color: "var(--text)", fontWeight: 500 }}>{m.label}</span>
           </div>
         ))}
       </div>
