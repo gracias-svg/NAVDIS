@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
+import { logSession, type PreQuestionAnswer } from "@/lib/supabase";
 import {
   BANKS,
   FAILURE_TYPES,
@@ -116,7 +117,7 @@ function NavdisApp() {
           />
         )}
         {step === 5 && <Screen5 onDone={() => setStep(6)} />}
-        {step === 6 && <Screen6 form={form} onReset={reset} />}
+        {step === 6 && <Screen6 form={form} onReset={reset} preQuestionAnswer={preQuestionAnswer} />}
       </main>
       <Footer />
     </div>
@@ -663,7 +664,15 @@ function Screen5({ onDone }: { onDone: () => void }) {
 }
 
 /* ────────────── SCREEN 6 ────────────── */
-function Screen6({ form, onReset }: { form: FormState; onReset: () => void }) {
+function Screen6({ 
+  form, 
+  onReset,
+  preQuestionAnswer 
+}: { 
+  form: FormState; 
+  onReset: () => void;
+  preQuestionAnswer: PreQuestionAnswer;
+}) {
   const result = useMemo<DisputeResult>(
     () =>
       analyzeDispute({
