@@ -28,6 +28,7 @@ const inputSchema = z.object({
   disputeDate: z.string(),
   amount: z.number().optional(),
   dayCount: z.number().optional(), // calendar days elapsed — for urgency signal
+  language: z.enum(["en", "hi", "mr", "ta"]).optional().default("en"),
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
