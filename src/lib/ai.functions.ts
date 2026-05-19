@@ -28,6 +28,7 @@ const inputSchema = z.object({
   disputeDate: z.string(),
   amount: z.number().optional(),
   dayCount: z.number().optional(), // calendar days elapsed — for urgency signal
+  language: z.enum(["en", "hi", "mr", "ta"]).optional().default("en"),
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -183,7 +184,7 @@ NON-NEGOTIABLE CONSTRAINTS — violating any of these is a failure:
 4. Do NOT mention the status colour or code. Do not write "GREEN", "YELLOW", "RED", "ACT SOON", "OVERDUE", or any status label.
 5. Do NOT make any prediction or promise about resolution: no "you will get your money back", no "the bank will resolve this", no "you should hear from them soon".
 6. Do NOT write more than 3 sentences. Two is better if the message is clear.
-7. Write for a 25-year-old smartphone user in India — not a finance professional. No jargon.`.trim();
+7. Write for a 25-year-old smartphone user in India — not a finance professional. No jargon.${d.language && d.language !== "en" ? `\n\nLANGUAGE INSTRUCTION: Write your response entirely in ${d.language === "hi" ? "Hindi (Devanagari script)" : d.language === "mr" ? "Marathi (Devanagari script)" : "Tamil (Tamil script)"}. All regulatory terms (RBI, Ombudsman, UPI) remain in English.` : ""}`.trim();
 }
 
 function buildTemplatePrompt(d: z.infer<typeof inputSchema>): string {
